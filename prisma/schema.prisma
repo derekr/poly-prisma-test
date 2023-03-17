@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["clientExtensions"]
+}
+
+datasource db {
+  provider     = "sqlite"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model File {
+  id        String      @id @default(cuid())
+  name      String
+  size      Int
+  type      String
+  url       String
+  fileType  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  FileImage FileImage[]
+  FilePdf   FilePdf[]
+}
+
+model FileImage {
+  id        String   @id @unique @default(cuid())
+  file      File     @relation(fields: [id], references: [id])
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FilePdf {
+  id        String   @id @unique @default(cuid())
+  file      File     @relation(fields: [id], references: [id])
+  numPages  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
